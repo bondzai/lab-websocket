@@ -7,6 +7,7 @@ from channels.generic.websocket import WebsocketConsumer
 
 class MyConsumer(WebsocketConsumer):
     def connect(self):
+        # self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = "chat_%s" % self.room_name
 
@@ -26,16 +27,27 @@ class MyConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
+
+        location = text_data_json["location"]
+        max_room = text_data_json["max_room"]
+        avaliable_room = text_data_json["avaliable_room"]
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name, {"type": "chat_message", "message": message}
+            self.room_group_name, 
+            {"type": "chat_message", 
+                "location": location,
+                "max_room":max_room,
+                "avaliable_room":avaliable_room
+            }
         )
 
     # Receive message from room group
     def chat_message(self, event):
-        message = event["message"]
-
         # Send message to WebSocket
-        self.send(text_data=json.dumps({"message": message}))
+        self.send(text_data=json.dumps(
+            {
+                "location": event["location"],
+                "max_room": event["max_room"],
+                "avaliable_room": event["avaliable_room"]
+            }))
