@@ -31,6 +31,7 @@ class MyConsumer(WebsocketConsumer):
         location = text_data_json["location"]
         max_room = text_data_json["max_room"]
         avaliable_room = text_data_json["avaliable_room"]
+        trigger_count = text_data_json["trigger_count"]
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
@@ -38,7 +39,7 @@ class MyConsumer(WebsocketConsumer):
             {"type": "chat_message", 
                 "location": location,
                 "max_room":max_room,
-                "avaliable_room":avaliable_room
+                "avaliable_room":avaliable_room,
             }
         )
 
@@ -49,5 +50,5 @@ class MyConsumer(WebsocketConsumer):
             {
                 "location": event["location"],
                 "max_room": event["max_room"],
-                "avaliable_room": event["avaliable_room"]
+                "avaliable_room": event["avaliable_room"],
             }))
