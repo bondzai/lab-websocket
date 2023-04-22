@@ -5,7 +5,7 @@ const Chat = () => {
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
-    const [endpoint, setEndpoint] = useState('wss://aot-dev.sitearound.com/ws/airport/BKK/'); // default endpoint
+    const [endpoint, setEndpoint] = useState('wss://aot-dev.sitearound.com/ws/airport/BKK/');
     const [isConnecting, setIsConnecting] = useState(false);
 
     useEffect(() => {
@@ -74,6 +74,7 @@ const Chat = () => {
                     type="text"
                     value={endpoint}
                     onChange={(e) => setEndpoint(e.target.value)}
+                    disabled={isConnected}
                 />
                 <div style={connectedStyle}></div>
                 {isConnected ? 'Connected' : 'Disconnected'}
