@@ -21,7 +21,6 @@ const Chat = () => {
                 setMessages(prevMessages => [JSON.parse(event.data), ...prevMessages]);
             };
 
-
             socket.onclose = () => {
                 console.log('WebSocket connection closed');
                 setIsConnected(false);
