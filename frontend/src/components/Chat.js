@@ -25,12 +25,28 @@ const Chat = () => {
             socket.onclose = () => {
                 console.log('WebSocket connection closed');
                 setIsConnected(false);
+                setIsConnecting(false);
             };
         }
     }, [socket, messages]);
 
     const handleToggleClick = () => {
         if (!isConnected) {
+            const isValidURL = (() => {
+                try {
+                    new URL(endpoint);
+                    return true;
+                } catch (error) {
+                    console.error(error)
+                    return false;
+                }
+            })();
+
+            if (!isValidURL) {
+                console.log('Invalid endpoint:', endpoint);
+                return;
+            }
+
             setIsConnecting(true);
             const newSocket = new WebSocket(endpoint);
             setSocket(newSocket);
@@ -41,6 +57,7 @@ const Chat = () => {
             setMessages([])
         }
     };
+
 
 
     const handleClearClick = () => {
