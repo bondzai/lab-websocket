@@ -65,7 +65,9 @@ const Chat = () => {
 
     return (
         <div className='Chat'>
-            <h1> WebSocket Client </h1>
+            <div className='top-bar'>
+                <h4> WebSocket Client </h4>
+            </div>
             <div className='status-panel'>
                 <div style={connectedStyle}></div>
                 {isConnected ? 'Connected' : 'Disconnected'}
