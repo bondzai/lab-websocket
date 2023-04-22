@@ -38,6 +38,7 @@ const Chat = () => {
             socket.close();
             setSocket(null);
             setIsConnected(false);
+            setMessages([])
         }
     };
 
