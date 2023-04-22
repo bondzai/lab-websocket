@@ -1,10 +1,9 @@
-import Chat from "./components/Chat";
-import "./App.css";
+import Room from "./components/Room";
 
 function App() {
     return (
-        <div className="App">
-            <Chat />
+        <div className="app">
+            <Room />
         </div>
     );
 }

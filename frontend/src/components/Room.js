@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import './Chat.css';
+import './Room.css';
 
-const Chat = () => {
+const Room = () => {
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
@@ -85,7 +85,7 @@ const Chat = () => {
     };
 
     return (
-        <div className='Chat'>
+        <div className='Room'>
             <div className='status-panel'>
                 <input
                     type="text"
@@ -109,4 +109,4 @@ const Chat = () => {
     );
 };
 
-export default Chat;
+export default Room;
