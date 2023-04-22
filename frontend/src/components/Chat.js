@@ -6,14 +6,12 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
     const [endpoint, setEndpoint] = useState('wss://aot-dev.sitearound.com/ws/airport/BKK/'); // default endpoint
-    const [isConnecting, setIsConnecting] = useState(false);
 
     useEffect(() => {
         if (socket) {
             socket.onopen = () => {
                 console.log('WebSocket connection opened');
                 setIsConnected(true);
-                setIsConnecting(false);
             };
 
             socket.onmessage = (event) => {
@@ -29,16 +27,15 @@ const Chat = () => {
         }
     }, [socket, messages]);
 
-    const handleToggleClick = () => {
-        if (!isConnected) {
-            setIsConnecting(true);
-            const newSocket = new WebSocket(endpoint);
-            setSocket(newSocket);
-        } else {
-            socket.close();
-            setSocket(null);
-            setIsConnected(false);
-        }
+    const handleConnectClick = () => {
+        const newSocket = new WebSocket(endpoint);
+        setSocket(newSocket);
+    };
+
+    const handleDisconnectClick = () => {
+        socket.close();
+        setSocket(null);
+        setIsConnected(false);
     };
 
     const handleClearClick = () => {
@@ -55,6 +52,17 @@ const Chat = () => {
         animation: isConnected ? 'blinking 1s infinite' : 'none'
     };
 
+    const renderMessages = () => {
+        return messages.map((m, index) => (
+            <li key={index}>
+                <div className="message-info">
+                    <span className="message-time">{new Date().toLocaleString()}</span>
+                </div>
+                <pre>{JSON.stringify(m, null, 2)}</pre>
+            </li>
+        ));
+    };
+
     return (
         <div className='Chat'>
             <h1> WebSocket Client </h1>
@@ -64,11 +72,7 @@ const Chat = () => {
             </div>
             <div className='messages'>
                 <ul>
-                    {messages.map((m, index) => (
-                        <li key={index}>
-                            <pre>{JSON.stringify(m, null, 2)}</pre>
-                        </li>
-                    ))}
+                    {renderMessages()}
                 </ul>
             </div>
             <div className='control-panel'>
@@ -77,7 +81,8 @@ const Chat = () => {
                     value={endpoint}
                     onChange={(e) => setEndpoint(e.target.value)}
                 />
-                <button onClick={handleToggleClick} disabled={isConnecting}>{isConnecting ? 'Connecting...' : (isConnected ? 'Disconnect' : 'Connect')}</button>
+                <button onClick={handleConnectClick}>Connect</button>
+                <button onClick={handleDisconnectClick}>Disconnect</button>
                 <button onClick={handleClearClick}>Clear Data</button>
             </div>
         </div>
