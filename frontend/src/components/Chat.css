@@ -7,15 +7,10 @@
     justify-content: center;
 }
 
-.top-bar {
-    font-size: 2em;
-    text-align: center;
-}
-
 .messages {
     display: block;
     width: 50%;
-    height: 500px;
+    height: 650px;
     overflow-y: scroll;
     padding: 16px;
     border: 1px solid #ccc;
@@ -53,6 +48,7 @@ input[type="text"] {
     border-radius: 5px;
     margin-right: 10px;
     font-size: 1.2em;
+    width: 700px;
 }
 
 button {

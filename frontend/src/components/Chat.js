@@ -6,12 +6,14 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
     const [endpoint, setEndpoint] = useState('wss://aot-dev.sitearound.com/ws/airport/BKK/'); // default endpoint
+    const [isConnecting, setIsConnecting] = useState(false);
 
     useEffect(() => {
         if (socket) {
             socket.onopen = () => {
                 console.log('WebSocket connection opened');
                 setIsConnected(true);
+                setIsConnecting(false);
             };
 
             socket.onmessage = (event) => {
@@ -27,16 +29,18 @@ const Chat = () => {
         }
     }, [socket, messages]);
 
-    const handleConnectClick = () => {
-        const newSocket = new WebSocket(endpoint);
-        setSocket(newSocket);
+    const handleToggleClick = () => {
+        if (!isConnected) {
+            setIsConnecting(true);
+            const newSocket = new WebSocket(endpoint);
+            setSocket(newSocket);
+        } else {
+            socket.close();
+            setSocket(null);
+            setIsConnected(false);
+        }
     };
 
-    const handleDisconnectClick = () => {
-        socket.close();
-        setSocket(null);
-        setIsConnected(false);
-    };
 
     const handleClearClick = () => {
         setMessages([]);
@@ -65,10 +69,12 @@ const Chat = () => {
 
     return (
         <div className='Chat'>
-            <div className='top-bar'>
-                <h4> WebSocket Client </h4>
-            </div>
             <div className='status-panel'>
+                <input
+                    type="text"
+                    value={endpoint}
+                    onChange={(e) => setEndpoint(e.target.value)}
+                />
                 <div style={connectedStyle}></div>
                 {isConnected ? 'Connected' : 'Disconnected'}
             </div>
@@ -78,13 +84,7 @@ const Chat = () => {
                 </ul>
             </div>
             <div className='control-panel'>
-                <input
-                    type="text"
-                    value={endpoint}
-                    onChange={(e) => setEndpoint(e.target.value)}
-                />
-                <button onClick={handleConnectClick}>Connect</button>
-                <button onClick={handleDisconnectClick}>Disconnect</button>
+                <button onClick={handleToggleClick} disabled={isConnecting}>{isConnecting ? 'Connecting...' : (isConnected ? 'Disconnect' : 'Connect')}</button>
                 <button onClick={handleClearClick}>Clear Data</button>
             </div>
         </div>
