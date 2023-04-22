@@ -6,19 +6,21 @@ const Chat = () => {
     const [messages, setMessages] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
     const [endpoint, setEndpoint] = useState('wss://aot-dev.sitearound.com/ws/airport/BKK/'); // default endpoint
+    const [isConnecting, setIsConnecting] = useState(false);
 
     useEffect(() => {
         if (socket) {
             socket.onopen = () => {
                 console.log('WebSocket connection opened');
                 setIsConnected(true);
+                setIsConnecting(false);
             };
 
             socket.onmessage = (event) => {
                 console.log('Received message:', event.data);
                 setMessages(prevMessages => [JSON.parse(event.data), ...prevMessages]);
             };
-            
+
 
             socket.onclose = () => {
                 console.log('WebSocket connection closed');
@@ -27,15 +29,16 @@ const Chat = () => {
         }
     }, [socket, messages]);
 
-    const handleConnectClick = () => {
-        const newSocket = new WebSocket(endpoint);
-        setSocket(newSocket);
-    };
-
-    const handleDisconnectClick = () => {
-        socket.close();
-        setSocket(null);
-        setIsConnected(false);
+    const handleToggleClick = () => {
+        if (!isConnected) {
+            setIsConnecting(true);
+            const newSocket = new WebSocket(endpoint);
+            setSocket(newSocket);
+        } else {
+            socket.close();
+            setSocket(null);
+            setIsConnected(false);
+        }
     };
 
     const handleClearClick = () => {
@@ -74,8 +77,7 @@ const Chat = () => {
                     value={endpoint}
                     onChange={(e) => setEndpoint(e.target.value)}
                 />
-                <button onClick={handleConnectClick}>Connect</button>
-                <button onClick={handleDisconnectClick}>Disconnect</button>
+                <button onClick={handleToggleClick} disabled={isConnecting}>{isConnecting ? 'Connecting...' : (isConnected ? 'Disconnect' : 'Connect')}</button>
                 <button onClick={handleClearClick}>Clear Data</button>
             </div>
         </div>
